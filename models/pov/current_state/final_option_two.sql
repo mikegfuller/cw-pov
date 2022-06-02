@@ -8,7 +8,7 @@
                     where table_name = '''|| table_name ||''' 
                         and lower(SOURCE_COLUMN_NAME) = lower(''' || source_column_name ||''')
                 ) attribute_id,
-                cast('''|| source_column_name || ''' as varchar) attribute_value 
+                cast('|| source_column_name || ' as varchar) attribute_value 
             from  '|| table_name || '
             where ' || source_column_name || ' is not null'
         from {{ ref('attribute_tbl') }}
