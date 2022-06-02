@@ -1,8 +1,18 @@
 {% macro build_query() %}
 
     {% set sql_query %}
-        select 
-            'select ' || attribute_id || ' as atr_id, '''|| table_name ||''' as atr_table_name' as query_col
+        select
+            'select cstmr_id as customer_id,
+                (
+                    select attribute_id
+                    from {{ ref('attribute_tbl') }}
+                        inner join {{ ref('customer_tbl') }} on fk_table_id = table_id
+                    where table_name = '''|| table_name ||''' 
+                        and lower(SOURCE_COLUMN_NAME) = lower(''' || source_column_name ||''')
+                ) attribute_id,
+                cast('''|| source_column_name || ''' as varchar) attribute_value 
+            from  temp_ref('''|| table_name || ''')}}
+            where ' || source_column_name || ' is not null'
         from {{ ref('attribute_tbl') }}
     {% endset %}
 
